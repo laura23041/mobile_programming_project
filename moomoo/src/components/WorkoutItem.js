@@ -10,5 +10,8 @@ export default function WorkoutItem({ title, duration }) {
 }
 
 const styles = StyleSheet.create({
-  item: { padding: 10, borderBottomWidth: 1, borderColor: '#ccc' },
+  item: { 
+    padding: 10, 
+    borderBottomWidth: 1, 
+    borderColor: '#ccc' },
 });

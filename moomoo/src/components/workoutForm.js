@@ -1,15 +1,22 @@
+
+// Tuodaan tarvittavat komponentit ja kirjastot
 import React, { useState } from 'react';
 import { View, TextInput, Button, StyleSheet } from 'react-native';
 
+// Komponentti, joka näyttää treenin lisäyslomakkeen
 export default function WorkoutForm({ onAddWorkout }) {
+  // Käyttäjän syöttämät arvot tallentuvat näihin
   const [type, setType] = useState('');
   const [duration, setDuration] = useState('');
   const [distance, setDistance] = useState('');
   const [calories, setCalories] = useState('');
 
+  // Funktio, joka suoritetaan kun käyttäjä painaa "Add Workout" -painiketta
   const handleAdd = () => {
+     // Jos pakolliset kentät puuttuvat, ei tehdä mitään
     if (!type || !duration) return;
 
+    // Luodaan uusi treeniobjekti käyttäjän antamista tiedoista
     const newWorkout = {
       type,
       duration: parseInt(duration),
@@ -21,13 +28,14 @@ export default function WorkoutForm({ onAddWorkout }) {
     // kutsutaan WorkoutsScreenistä saatua funktiota
     onAddWorkout(newWorkout);
 
-    // tyhjennetään lomake
+    // tyhjennetään lomake seuraavaa lisäystä varten
     setType('');
     setDuration('');
     setDistance('');
     setCalories('');
   };
 
+  // Käyttöliittymä
   return (
     <View style={styles.container}>
       <TextInput
@@ -61,7 +69,7 @@ export default function WorkoutForm({ onAddWorkout }) {
     </View>
   );
 }
-
+// Perus tyylimääritykset
 const styles = StyleSheet.create({
   container: {
     marginBottom: 20,
