@@ -1,50 +1,60 @@
 import * as SQLite from 'expo-sqlite';
 
-const db = SQLite.openDatabase('sportsTracker.db');
+const db = SQLite.openDatabase('workouts.db');
 
-// Luo taulu, jos ei vielä ole
 export const createTables = () => {
   db.transaction(tx => {
     tx.executeSql(
       `CREATE TABLE IF NOT EXISTS workouts (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        title TEXT,
+        type TEXT,
         duration INTEGER,
+        distance REAL,
+        calories REAL,
         date TEXT
       );`
     );
   });
 };
 
-// Hae kaikki harjoitukset
-export const getWorkouts = (setWorkouts) => {
+// Lisää treeni
+export const addWorkout = (workout, callback) => {
   db.transaction(tx => {
     tx.executeSql(
-      'SELECT * FROM workouts;',
+      'INSERT INTO workouts (type, duration, distance, calories, date) VALUES (?, ?, ?, ?, ?)',
+      [workout.type, workout.duration, workout.distance, workout.calories, workout.date],
+      (_, result) => {
+        if (typeof callback === 'function') callback(result);
+      },
+      (_, error) => console.log('Insert error:', error)
+    );
+  });
+};
+
+// Hae kaikki treenit
+export const getWorkouts = (callback) => {
+  db.transaction(tx => {
+    tx.executeSql(
+      'SELECT * FROM workouts ORDER BY date DESC;',
       [],
-      (_, { rows }) => setWorkouts(rows._array)
+      (_, { rows }) => {
+        if (typeof callback === 'function') callback(rows._array);
+      },
+      (_, error) => console.log('Select error:', error)
     );
   });
 };
 
-// Lisää harjoitus
-export const addWorkout = (title, duration, date, callback) => {
-  db.transaction(tx => {
-    tx.executeSql(
-      'INSERT INTO workouts (title, duration, date) VALUES (?, ?, ?);',
-      [title, duration, date],
-      () => callback()
-    );
-  });
-};
-
-// Poista harjoitus
+// 🔹 Poista treeni id:n perusteella
 export const deleteWorkout = (id, callback) => {
   db.transaction(tx => {
     tx.executeSql(
       'DELETE FROM workouts WHERE id = ?;',
       [id],
-      () => callback()
+      (_, result) => {
+        if (typeof callback === 'function') callback(result);
+      },
+      (_, error) => console.log('Delete error:', error)
     );
   });
 };
